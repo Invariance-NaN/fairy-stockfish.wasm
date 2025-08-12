@@ -537,13 +537,14 @@ Variant* VariantParser<DoCheck>::parse(Variant* v) {
     parse_attribute("connectRegion1Black", v->connectRegion1[BLACK]);
     parse_attribute("connectRegion2Black", v->connectRegion2[BLACK]);
     parse_attribute("connectNxN", v->connectNxN);
+    parse_attribute("simpleMaterialThreshold", v->simpleMaterialThreshold);
     parse_attribute("collinearN", v->collinearN);
     parse_attribute("connectValue", v->connectValue);
     parse_attribute("materialCounting", v->materialCounting);
     parse_attribute("adjudicateFullBoard", v->adjudicateFullBoard);
     parse_attribute("countingRule", v->countingRule);
     parse_attribute("castlingWins", v->castlingWins);
-    
+
     // Report invalid options
     if (DoCheck)
     {

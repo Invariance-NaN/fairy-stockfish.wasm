@@ -157,6 +157,7 @@ struct Variant {
   Bitboard connectRegion1[COLOR_NB] = {};
   Bitboard connectRegion2[COLOR_NB] = {};
   int connectNxN = 0;
+  int simpleMaterialThreshold = 0;
   int collinearN = 0;
   Value connectValue = VALUE_MATE;
   MaterialCounting materialCounting = NO_MATERIAL_COUNTING;

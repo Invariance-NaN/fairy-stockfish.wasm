@@ -2721,8 +2721,42 @@ bool Position::is_optional_game_end(Value& result, int ply, int countStarted) co
 /// It does not detect stalemates.
 
 bool Position::is_immediate_game_end(Value& result, int ply) const {
+  if (simple_material_threshold() != 0)
+  {
+    int whiteMaterial =
+        count(WHITE, PAWN) * 1 +
+        count(WHITE, KNIGHT) * 3 +
+        count(WHITE, BISHOP) * 3 +
+        count(WHITE, ROOK) * 5 +
+        count(WHITE, QUEEN) * 9;
 
-  // Extinction
+    int blackMaterial =
+        count(BLACK, PAWN) * 1 +
+        count(BLACK, KNIGHT) * 3 +
+        count(BLACK, BISHOP) * 3 +
+        count(BLACK, ROOK) * 5 +
+        count(BLACK, QUEEN) * 9;
+
+    // If simple_material_threshold() is positive and the difference in material is greater than it in magnitude, the player with more material wins
+    // If simple_material_threshold() is negative, ""                                                        ""   the player with less material wins
+
+    int materialDifference = whiteMaterial - blackMaterial;
+    int threshold = simple_material_threshold();
+
+    if (abs(materialDifference) >= abs(threshold)) {
+        bool whiteWins;
+        if (threshold > 0) {
+            // Player with more material wins
+            whiteWins = materialDifference > 0;
+        } else {
+            // Player with less material wins
+            whiteWins = materialDifference < 0;
+        }
+
+        result = (whiteWins && sideToMove == WHITE) || (!whiteWins && sideToMove == BLACK) ? mate_in(ply) : mated_in(ply);
+        return true;
+    }
+}  // Extinction
   // Extinction does not apply for pseudo-royal pieces, because they can not be captured
   if (extinction_value() != VALUE_NONE && (!var->extinctionPseudoRoyal || blast_on_capture()))
   {
@@ -2856,7 +2890,7 @@ bool Position::is_immediate_game_end(Value& result, int ply) const {
           current |= newBitboard;
       }
   }
-  
+
   if (connect_nxn())
   {
       Bitboard connectors = connectPieces;
